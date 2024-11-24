@@ -350,40 +350,43 @@ function filterList(input, listSelector, textSelector) {
   const filterText = input.value.toLowerCase();
   const subLists = document.querySelectorAll(listSelector);
 
-  subLists.forEach(list => {
-    // On cherche tous les éléments texte qui correspondent au sélecteur dans cette ligne
-    const textNodes = list.querySelectorAll(textSelector);
-    console.log(textNodes)
+  subLists.forEach(subList => {
+    // On récupère les enfants directs de la sous-liste
+    const directChildren = Array.from(subList.children);
 
-    textNodes.forEach(textNode => {
-      const text = textNode.textContent.toLowerCase();
-      // On cherche l'élément parent le plus proche qui est un enfant direct de row
-      let parentElement = textNode;
-      while (parentElement.parentElement && parentElement.parentElement !== list) {
-        parentElement = parentElement.parentElement;
-      }
+    console.log(directChildren)
 
-      // On applique le style sur cet élément parent trouvé
-      if (parentElement !== list) {
-        parentElement.style.display = text.includes(filterText) ? "" : "none";
-      }
+    // Pour chaque enfant direct, on vérifie s'il contient un texte qui matche
+    directChildren.forEach(child => {
+      const hasMatchingText = Array.from(child.querySelectorAll(textSelector))
+        .some(textElement => textElement.textContent.toLowerCase().includes(filterText));
+
+      // On masque/affiche l'élément enfant direct selon la présence du texte
+      child.style.display = hasMatchingText ? "" : "none";
     });
   });
 }
-// function filterList(input, rowsSelector, textSelector) {
+// function filterList(input, listSelector, textSelector) {
 //   const filterText = input.value.toLowerCase();
-//   const rows = document.querySelectorAll(rowsSelector);
+//   const subLists = document.querySelectorAll(listSelector);
 //
-//   let txt = [];
-//   console.log(rows)
-//   console.log(rows[0].parentNode)
-//   rows.forEach(row => {
-//     const elt = row.querySelector(`:has(${textSelector})`)
-//     console.log("elt ", elt)
-//     const text = row.querySelector(textSelector)?.textContent.toLowerCase();
-//     row.style.display = text?.includes(filterText) ? "" : "none";
-//     txt.push(text);
-//     console.log("row ", row)
+//   subLists.forEach(list => {
+//     // On cherche tous les éléments texte qui correspondent au sélecteur dans cette ligne
+//     const textNodes = list.querySelectorAll(textSelector);
+//     console.log(textNodes)
+//
+//     textNodes.forEach(textNode => {
+//       const text = textNode.textContent.toLowerCase();
+//       // On cherche l'élément parent le plus proche qui est un enfant direct de row
+//       let parentElement = textNode;
+//       while (parentElement.parentElement && parentElement.parentElement !== list) {
+//         parentElement = parentElement.parentElement;
+//       }
+//
+//       // On applique le style sur cet élément parent trouvé
+//       if (parentElement !== list) {
+//         parentElement.style.display = text.includes(filterText) ? "" : "none";
+//       }
+//     });
 //   });
-//   console.log(txt);
 // }
