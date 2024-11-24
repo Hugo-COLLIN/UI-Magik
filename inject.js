@@ -330,49 +330,6 @@ function finalize() {
 
 startPicker();
 
-// getCssSelector.js
-function getCssSelector(element) {
-  if (!(element instanceof Element)) return null;
-
-  const parts = [];
-  while (element) {
-    let selector = element.nodeName.toLowerCase();
-
-    // Add ID if available and unique
-    if (element.id) {
-      selector += `#${element.id}`;
-      parts.unshift(selector);
-      break;
-    }
-
-    // Add meaningful class names
-    if (element.className) {
-      const classes = element.className
-        .split(/\s+/)
-        .filter(name => !name.match(/^bg-|^z-|^\d/)); // Avoid dynamic or layout-specific classes
-      if (classes.length > 0) {
-        selector += `.${classes.join('.')}`;
-      }
-    }
-
-    // Add nth-child only if necessary
-    if (element.parentNode) {
-      const siblings = Array.from(element.parentNode.children).filter(
-        sibling => sibling.nodeName === element.nodeName
-      );
-      if (siblings.length > 1) {
-        const index = siblings.indexOf(element) + 1;
-        selector += `:nth-child(${index})`;
-      }
-    }
-
-    parts.unshift(selector);
-    element = element.parentElement;
-  }
-
-  return parts.join(' > ');
-}
-
 // ---------------------
 //insertBar.js
 function insertSearchBar(listSelector, textSelector, placementSelector) {
