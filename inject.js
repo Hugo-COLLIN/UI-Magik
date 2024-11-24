@@ -346,31 +346,29 @@ function insertSearchBar(listSelector, textSelector, placementSelector) {
 }
 
 //filterList.js
-function filterList(input, rowsSelector, textSelector) {
+function filterList(input, listSelector, textSelector) {
   const filterText = input.value.toLowerCase();
-  const rows = document.querySelectorAll(rowsSelector);
+  const subLists = document.querySelectorAll(listSelector);
 
-  // let txt = [];
-  rows.forEach(row => {
+  subLists.forEach(list => {
     // On cherche tous les éléments texte qui correspondent au sélecteur dans cette ligne
-    const textNodes = row.querySelectorAll(textSelector);
+    const textNodes = list.querySelectorAll(textSelector);
     console.log(textNodes)
 
     textNodes.forEach(textNode => {
       const text = textNode.textContent.toLowerCase();
       // On cherche l'élément parent le plus proche qui est un enfant direct de row
       let parentElement = textNode;
-      while (parentElement.parentElement && parentElement.parentElement !== row) {
+      while (parentElement.parentElement && parentElement.parentElement !== list) {
         parentElement = parentElement.parentElement;
       }
 
       // On applique le style sur cet élément parent trouvé
-      if (parentElement !== row) {
+      if (parentElement !== list) {
         parentElement.style.display = text.includes(filterText) ? "" : "none";
       }
     });
   });
-  // console.log(txt);
 }
 // function filterList(input, rowsSelector, textSelector) {
 //   const filterText = input.value.toLowerCase();
