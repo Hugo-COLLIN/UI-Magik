@@ -3,6 +3,6 @@ chrome.action.onClicked.addListener(async (tab) => {
 
   await chrome.scripting.executeScript({
     target: {tabId: tab.id || 0},
-    files: ['css-picker/picker.js']
+    files: ['inject.js']
   });
 });

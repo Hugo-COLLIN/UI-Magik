@@ -1,3 +1,4 @@
+//picker.js
 let currentStep = 1;
 let selectors = {};
 
@@ -55,3 +56,29 @@ function finalize() {
 }
 
 startPicker();
+
+// ---------------------
+//insertBar.js
+function insertSearchBar(listSelector, textSelector, placementSelector) {
+  const searchInput = document.createElement("input");
+  searchInput.type = "text";
+  searchInput.placeholder = "Search...";
+
+  const placementElement = document.querySelector(placementSelector);
+  placementElement.appendChild(searchInput);
+
+  searchInput.addEventListener("input", () => {
+    filterList(searchInput, listSelector, textSelector);
+  });
+}
+
+//filterList.js
+function filterList(input, rowsSelector, textSelector) {
+  const filterText = input.value.toLowerCase();
+  const rows = document.querySelectorAll(rowsSelector);
+
+  rows.forEach(row => {
+    const text = row.querySelector(textSelector)?.textContent.toLowerCase();
+    row.style.display = text?.includes(filterText) ? "" : "none";
+  });
+}
