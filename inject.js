@@ -348,22 +348,46 @@ function insertSearchBar(listSelector, textSelector, placementSelector) {
 //filterList.js
 function filterList(input, listSelector, textSelector) {
   const filterText = input.value.toLowerCase();
-  const subLists = document.querySelectorAll(listSelector);
+  const mainList = document.querySelector(listSelector);
 
-  subLists.forEach(subList => {
-    // On récupère les enfants directs de la sous-liste
-    const directChildren = Array.from(subList.children);
+  // On récupère tous les éléments contenant du texte qui matchent textSelector
+  const textElements = mainList.querySelectorAll(textSelector);
+  if (textElements.length === 0) return;
 
-    console.log(directChildren)
+  // On prend le premier élément texte comme référence
+  // pour trouver la structure parent commune
+  const firstTextElement = textElements[0];
+  let itemParent = firstTextElement.parentElement;
+  let commonParent = null;
 
-    // Pour chaque enfant direct, on vérifie s'il contient un texte qui matche
-    directChildren.forEach(child => {
-      const hasMatchingText = Array.from(child.querySelectorAll(textSelector))
-        .some(textElement => textElement.textContent.toLowerCase().includes(filterText));
+  // On remonte dans l'arbre jusqu'à trouver un parent qui contient
+  // plusieurs éléments similaires (même tag)
+  while (itemParent && itemParent !== mainList) {
+    const siblings = Array.from(itemParent.parentElement.children)
+      .filter(child => child.tagName === itemParent.tagName);
 
-      // On masque/affiche l'élément enfant direct selon la présence du texte
-      child.style.display = hasMatchingText ? "" : "none";
-    });
+    if (siblings.length > 1) {
+      // On a trouvé un niveau avec plusieurs éléments similaires
+      commonParent = itemParent.parentElement;
+      break;
+    }
+    itemParent = itemParent.parentElement;
+  }
+
+  // Si on n'a pas trouvé de structure de sous-liste, on utilise la liste principale
+  const parentList = commonParent || mainList;
+
+  // On récupère tous les éléments qui ont la même structure que itemParent
+  const listItems = Array.from(parentList.children)
+    .filter(child => child.tagName === itemParent.tagName);
+
+  // Pour chaque item, on vérifie si son texte correspond au filtre
+  listItems.forEach(item => {
+    const textNodes = item.querySelectorAll(textSelector);
+    const hasMatchingText = Array.from(textNodes)
+      .some(text => text.textContent.toLowerCase().includes(filterText));
+
+    item.style.display = hasMatchingText ? "" : "none";
   });
 }
 // function filterList(input, listSelector, textSelector) {
